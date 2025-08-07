@@ -1,0 +1,543 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Caprasimo&family=DynaPuff:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #2E6574;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.pattern {
+  background-image: url("/hero-background.png");
+  width: 100vw;
+  height: 2191px;            /* Höhe vom Bild */
+  background-size: contain;    /* GANZES Bild bleibt sichtbar */
+  background-position: top center;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.hero-text{
+  font-family: DM Sans, sans-serif;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 90px;
+  max-width: 56rem; /* max-w-4xl */
+  text-align: center;
+  font-size: 3rem; /* text-5xl */
+  font-weight: 700; /* font-bold */
+  line-height: 1.2; /* leading-tight */
+  letter-spacing: -0.01em; /* tracking-[-1%] */
+  color: #ffffff; /* text-white */
+}
+
+.highlight-text {
+  background: linear-gradient(
+    120deg,
+    #1e90ff 0%,
+    #00bfff 30%,
+    #32cd32 60%,
+    #006400 100%
+  );
+  background-size: 200% 200%; /* genug Raum für Bewegung */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* ✨ Sichtbarkeit & Tiefe */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+
+  /* 🌍 leichte Gradient-Animation */
+  animation: gradientMove 10s ease-in-out infinite;
+
+  display: inline-block;   /* <<< jetzt reagiert transform */
+  transition: transform 1s ease;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.highlight-text:hover {
+  transform: translateY(-4px); /* leicht nach oben */
+  cursor: pointer;
+}
+
+
+
+
+.country-card{
+  width: 100%;
+  max-width: 300px; /* Card wird nie größer als 400px */
+  margin: 0 auto;    /* Zentriert auf größeren Screens */
+
+  padding: 20px;
+
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.10);
+  background: rgba(217, 217, 217, 0.20);
+  box-shadow: 0 4px 7.9px 0 rgba(255, 255, 255, 0.07) inset;
+  backdrop-filter: blur(3.799999952316284px);
+
+  display: flex;
+  justify-content:left;
+  flex-direction: column;
+
+  transition: 0.1s ease-in-out;
+  padding-bottom: 40px;
+}
+
+.country-card:hover{
+  transform: scale(1.04); /* leicht nach oben */
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+}
+
+.country-card img {
+  border-radius: 7px;
+  margin-bottom: 15px;
+
+  max-height: 150px;   /* oder was dir gefällt */
+  width: auto;         /* Breite passt sich automatisch an */
+  height: auto;        /* verhindert Verzerrung */
+  object-fit: contain; /* Bild bleibt vollständig sichtbar */
+  display: block;      /* verhindert „whitespace gaps“ bei inline-img */
+  margin-left: auto;   /* zentriert horizontal */
+  margin-right: auto;
+}
+
+.country-card h2 {
+  color: #FFF;
+  font-family: "DM Sans";
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.country-card h3{
+  color: #FFF;
+  font-family: "DM Sans";
+  font-size: 1.2rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.country-card h4 span{
+  opacity: 0.5;
+}
+
+.country-card div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.country-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;   /* ✅ linksbündig */
+  gap: 20px;    
+  row-gap: 50px;                 /* Abstand zwischen den Cards */
+
+  max-width: 1000px;             /* ✅ begrenzt die Breite */
+  margin: 0 auto;                /* zentriert den ganzen Block auf der Seite */
+  padding: 0 16px;               /* bisschen Luft am Rand */
+  list-style: none;              /* falls ul, keine Punkte */
+}
+
+.city-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;   /* ✅ linksbündig */
+  gap: 20px;    
+  row-gap: 50px;                 /* Abstand zwischen den Cards */
+
+  max-width: 1000px;             /* ✅ begrenzt die Breite */
+  margin: 0 auto;                /* zentriert den ganzen Block auf der Seite */
+  padding: 0 16px;               /* bisschen Luft am Rand */
+  list-style: none;              /* falls ul, keine Punkte */
+}
+
+.search{
+  border-radius: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.11);
+  background: rgba(217, 217, 217, 0.16);
+  backdrop-filter: blur(11.75px);
+
+  display: flex;
+  align-items: center;
+
+  padding: 15px;
+  max-width: 800px;
+  margin: 30px;
+
+  transition: 0.2s ease-in-out;
+}
+
+.search:hover{
+  transform: scale(1.03);
+}
+
+header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 75vh;
+
+}
+
+.search input {
+  color: #FFF;
+  font-family: Inter;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  border: none;            /* kein Rahmen */
+  outline: none;           /* kein blaues/oranges Highlight beim Klicken */
+  box-shadow: none;        /* entfernt eventuelle Browser-Boxshadows */
+  -webkit-appearance: none; /* Safari/iOS Standardstyle weg */
+  -moz-appearance: none;    /* Firefox Standardstyle weg */
+  appearance: none;   
+}
+
+.search img{
+  margin-left: 10px;
+  margin-right: 20px;
+}
+
+.menu-bar{
+  position: absolute;
+
+  opacity: 0.8;
+  top: 20px;
+  left: 30px;
+
+  width: 100%;
+}
+
+.menu-bar img{
+  width: 50%;
+  max-width: 130px;
+  height: auto;
+  transition: 0.2s ease-in-out;
+}
+
+.menu-bar img:hover{
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+.citySign {
+  background-color: #ffc400; /* typisches Gelb */
+  padding: 10px 20px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%; 
+  max-width: 320px;
+  min-width: 180px;
+  height: 120px;
+  aspect-ratio: 2.5 / 1;
+  margin: 0 auto; /* ⬅ Schild in der Card immer mittig */
+
+  box-shadow:
+    0 0 0 4px black,   /* schwarzer Rand */
+    0 0 0 10px #FFD600; /* äußerer Gelb-Rand */
+  
+  overflow: hidden; /* falls mal minimal übersteht */
+  text-align: center;
+
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.citySign span {
+  font-family: 'Arial', 'Helvetica', sans-serif, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  color: black;
+  font-size: 36px;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  transform-origin: center center;
+
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 50px;
+}
+
+.separator{
+  width: 1073px;
+  height: 2px;
+  flex-shrink: 0;
+  background: rgba(217, 217, 217, 0.28);
+
+  width: 100%;
+
+}
+
+.title-section{
+  color: #FFF;
+  font-family: "DM Sans";
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin: 5px;
+  opacity: 0.8;
+}
+
+.separator-container{
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items:start;
+
+  margin-bottom: 50px;
+}
+
+.result-container{
+  display: flex;
+  flex-direction: row;
+  align-items: top;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.result-text{
+  color: #FFF;
+  font-family: "DM Sans";
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  opacity: 0.28;
+  margin: 8px;
+}
+
+.filter-btn{
+  border-radius: 17px;
+  border: 1px solid rgba(212, 206, 206, 0.55);
+  background: rgba(217, 217, 217, 0.26);
+  backdrop-filter: blur(5.150000095367432px);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+  padding-inline: 25px;
+
+  margin: 10px;
+
+  transition: 0.1s ease-in-out;
+}
+
+.filter-btn:hover{
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+.filter-btn p{
+  color: #FFF;
+  font-family: "DM Sans";
+  font-size: 1.2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-left: 10px;
+  
+  opacity: 0.6;
+}
+
+footer {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  padding: 20px 40px;
+  margin-top: 50px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* macht Footer breiter auf Desktop */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 🖥️ Desktop-Layout */
+@media (min-width: 768px) {
+  footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+footer img {
+  width: 120px;
+  height: auto;
+  opacity: 0.9;
+  transition: transform 0.2s ease-in-out;
+  margin-bottom: 8px;
+}
+
+footer img:hover {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+.footer-left,
+.footer-right {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer-left {
+    text-align: left;
+  }
+  .footer-right {
+    text-align: right;
+  }
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+}
+
+footer a {
+  text-decoration: none;
+  font-weight: 500;
+  margin: 0 8px;
+  transition: color 0.2s;
+}
+
+nav {
+  margin-bottom: 6px;
+}
+
+.coffee-link {
+  position: relative;
+  display: inline-block;
+  opacity: 0.8;
+  color: #ffd700;              /* goldig */
+  text-decoration: none;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+/* ✨ Glanz-Effekt */
+.coffee-link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shine 3s ease-in-out infinite;
+}
+
+.nav-icons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
+  right: 0px;
+  z-index: 2;
+  position: absolute;
+  margin-right: 15px;
+  margin-top: 20px;
+}
+
+.nav-icons img{
+  transform: scale(0.9);
+  margin: 10px;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.nav-icons img:hover{
+  transform: scale(1);
+  cursor: pointer;
+}
+
+/* 🪄 Animation */
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  20% {
+    left: 125%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+/* Hover für bisschen mehr Interaktivität */
+.coffee-link:hover {
+  opacity: 1;
+  color: #ffee88;
+}
+
+
+
+@media (min-width: 640px) {
+  .hero-text {
+    font-size: 64px;        /* sm:text-[64px] */
+    line-height: 76px;      /* sm:leading-[76px] */
+  }
+  
+}
+
+@media (max-width: 1100px) {
+  .pattern {
+    background-size: cover;      /* füllt die Fläche */
+    background-position: center; /* mittig ausgerichtet */
+  }
+}
+
