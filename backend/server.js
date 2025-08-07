@@ -1,76 +1,89 @@
 import express from "express";
 import fs from "fs";
 import cors from "cors";
-import Database from "better-sqlite3"; 
-import rateLimit from 'express-rate-limit'
+import Database from "better-sqlite3";
+import rateLimit from "express-rate-limit";
+import xss from "xss"; // optional, nur falls du XSS-Schutz brauchst
 
 const app = express();
 const PORT = 3000;
 
-let countries = JSON.parse(fs.readFileSync("countries.json"));
-
-// 👉 SQLite DB laden
-const db = new Database("cities.db");
-
+// Rate Limit: 100 requests pro IP pro Minute
 const limiter = rateLimit({
-  windowMs: 60 * 1000, // 1 Minute
-  max: 100,            // Max 100 Requests pro IP/Minute
+  windowMs: 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-})
-app.use(limiter)
+});
+app.use(limiter);
+
+// CORS nur für deine Seite
+app.use(cors({
+  origin: "https://geo-scope.netlify.app",
+  optionsSuccessStatus: 200
+}));
+
+// Middleware: Nur Anfragen mit korrekt referer zulassen (optional, nicht narrensicher!)
+app.use((req, res, next) => {
+  const referer = req.get("Referer");
+  if (referer && !referer.startsWith("https://geo-scope.netlify.app")) {
+    return res.status(403).json({ error: "Forbidden - Invalid referer" });
+  }
+  next();
+});
 
 app.use(express.json());
-app.use(cors({
-  origin: 'https://geo-scope.netlify.app'
-}))
-
 
 app.use((req, res, next) => {
   console.log("📥 Request:", req.method, req.url);
   next();
 });
 
-/**
- * Länder-Suchfunktion mit Scoring
- */
+// SQLite DB laden
+const db = new Database("cities.db");
+
+// Länder laden
+let countries = [];
+try {
+  countries = JSON.parse(fs.readFileSync("countries.json"));
+} catch (err) {
+  console.error("❌ Fehler beim Laden von countries.json:", err.message);
+}
+
+// Input-Sanitizing-Helfer
+function sanitize(input) {
+  return String(input)
+    .replace(/[^a-z0-9äöüß\- ]/gi, "")
+    .trim()
+    .toLowerCase();
+}
+
+// /countries/search
 app.get("/geoscope/countries/search", (req, res) => {
-  const q = (req.query.q || "").toLowerCase();
+  const q = sanitize(req.query.q || "");
   if (!q) return res.json([]);
 
   const results = countries
     .map(country => {
       let score = 0;
-
       if (country.name?.common?.toLowerCase().includes(q)) score += 10;
       if (country.name?.official?.toLowerCase().includes(q)) score += 8;
 
-      const searchFields = [
-        "capital",
-        "region",
-        "subregion",
-        "cca2",
-        "cca3",
-        "cioc"
-      ];
-
+      const searchFields = ["capital", "region", "subregion", "cca2", "cca3", "cioc"];
       searchFields.forEach(field => {
         const value = country[field];
         if (!value) return;
 
         if (Array.isArray(value)) {
           value.forEach(v => {
-            if (v.toString().toLowerCase().includes(q)) score += 3;
+            if (sanitize(v).includes(q)) score += 3;
           });
         } else {
-          if (value.toString().toLowerCase().includes(q)) score += 3;
+          if (sanitize(value).includes(q)) score += 3;
         }
       });
 
-      deepSearch(country, q, (matchScore) => {
-        score += matchScore;
-      });
-
+      deepSearch(country, q, matchScore => score += matchScore);
       return { ...country, score };
     })
     .filter(item => item.score > 0)
@@ -79,26 +92,19 @@ app.get("/geoscope/countries/search", (req, res) => {
   res.json(results);
 });
 
-/**
- * Hilfsfunktion: durchsucht rekursiv das Objekt
- */
 function deepSearch(obj, term, addScore) {
   for (const key in obj) {
     if (["name"].includes(key)) continue;
 
     const value = obj[key];
-    if (value === null || value === undefined) continue;
+    if (value == null) continue;
 
     if (typeof value === "string" || typeof value === "number") {
-      if (value.toString().toLowerCase().includes(term)) {
-        addScore(1);
-      }
+      if (sanitize(value).includes(term)) addScore(1);
     } else if (Array.isArray(value)) {
       value.forEach(v => {
         if (typeof v === "string" || typeof v === "number") {
-          if (v.toString().toLowerCase().includes(term)) {
-            addScore(1);
-          }
+          if (sanitize(v).includes(term)) addScore(1);
         } else if (typeof v === "object") {
           deepSearch(v, term, addScore);
         }
@@ -109,27 +115,22 @@ function deepSearch(obj, term, addScore) {
   }
 }
 
-/**
- * Random-Länder-Endpunkt
- */
+// /countries/random
 app.get("/geoscope/countries/random", (req, res) => {
-  const limit = req.query.limit ? parseInt(req.query.limit) : null;
-
+  const limit = Math.min(parseInt(req.query.limit) || 10, 50); // Max 50
   const shuffled = [...countries];
+
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
 
-  res.json(limit ? shuffled.slice(0, limit) : shuffled);
+  res.json(shuffled.slice(0, limit));
 });
 
-/**
- * 🏙️ Cities Search
- * GET /cities/search?q=term
- */
+// /cities/search
 app.get("/geoscope/cities/search", (req, res) => {
-  const q = (req.query.q || "").toLowerCase();
+  const q = sanitize(req.query.q || "");
   if (!q) return res.json([]);
 
   const stmt = db.prepare(`
@@ -145,10 +146,7 @@ app.get("/geoscope/cities/search", (req, res) => {
   res.json(results);
 });
 
-/**
- * 🏙️ Cities Random (10 zufällige Städte)
- * GET /cities/random
- */
+// /cities/random
 app.get("/geoscope/cities/random", (req, res) => {
   const stmt = db.prepare(`
     SELECT * FROM cities
@@ -161,5 +159,5 @@ app.get("/geoscope/cities/random", (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`✅ Server alive on port http://localhost:${PORT}`)
+  console.log(`✅ Server läuft auf http://localhost:${PORT}`)
 );
