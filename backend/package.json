@@ -17,7 +17,8 @@
     "node-fetch": "^3.3.2",
     "sqlite3": "^5.1.7",
     "xlsx": "^0.18.5",
-    "xlsx-populate": "^1.21.0"
+    "xlsx-populate": "^1.21.0",
+    "xss": "^1.0.15"
   },
   "type": "module"
 }
