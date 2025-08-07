@@ -1,7 +1,8 @@
 import express from "express";
 import fs from "fs";
 import cors from "cors";
-import Database from "better-sqlite3";   // 👈 SQLite dazu
+import Database from "better-sqlite3"; 
+import rateLimit from 'express-rate-limit'
 
 const app = express();
 const PORT = 3000;
@@ -11,8 +12,19 @@ let countries = JSON.parse(fs.readFileSync("countries.json"));
 // 👉 SQLite DB laden
 const db = new Database("cities.db");
 
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 Minute
+  max: 100,            // Max 100 Requests pro IP/Minute
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+app.use(limiter)
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://geo-scope.netlify.app.netlify.app'
+}))
+
 
 app.use((req, res, next) => {
   console.log("📥 Request:", req.method, req.url);
