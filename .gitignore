@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-mapsicon-master/
-outlines/
+
+backend/cities.json
+backend/mapsicon-master/
