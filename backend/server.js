@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 /**
  * Länder-Suchfunktion mit Scoring
  */
-app.get("/countries/search", (req, res) => {
+app.get("/geoscope/countries/search", (req, res) => {
   const q = (req.query.q || "").toLowerCase();
   if (!q) return res.json([]);
 
@@ -112,7 +112,7 @@ function deepSearch(obj, term, addScore) {
 /**
  * Random-Länder-Endpunkt
  */
-app.get("/countries/random", (req, res) => {
+app.get("/geoscope/countries/random", (req, res) => {
   const limit = req.query.limit ? parseInt(req.query.limit) : null;
 
   const shuffled = [...countries];
@@ -128,7 +128,7 @@ app.get("/countries/random", (req, res) => {
  * 🏙️ Cities Search
  * GET /cities/search?q=term
  */
-app.get("/cities/search", (req, res) => {
+app.get("/geoscope/cities/search", (req, res) => {
   const q = (req.query.q || "").toLowerCase();
   if (!q) return res.json([]);
 
@@ -149,7 +149,7 @@ app.get("/cities/search", (req, res) => {
  * 🏙️ Cities Random (10 zufällige Städte)
  * GET /cities/random
  */
-app.get("/cities/random", (req, res) => {
+app.get("/geoscope/cities/random", (req, res) => {
   const stmt = db.prepare(`
     SELECT * FROM cities
     ORDER BY RANDOM()

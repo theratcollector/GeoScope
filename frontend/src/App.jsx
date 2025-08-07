@@ -5,8 +5,7 @@ import CountryCard from './components/CountryCard.jsx'
 import { useDebounce } from 'use-debounce';
 import CityCard from './components/CityCard.jsx'
 
-const API_BASE_URL_OLD = "https://restcountries.com/v3.1"
-const API_BASE_URL = "http://localhost:3000"; // Updated to match the backend server
+const API_BASE_URL = "https://geoscopeapi.duckdns.org/geoscope"; // Updated to match the backend server
 
 const App = () => {
 
