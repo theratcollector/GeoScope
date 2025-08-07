@@ -22,7 +22,7 @@ app.use(limiter)
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://geo-scope.netlify.app.netlify.app'
+  origin: 'https://geo-scope.netlify.app'
 }))
 
 
